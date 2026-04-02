@@ -25,23 +25,19 @@ router.post('/', upload.single('file'), async (req, res) => {
       return res.status(400).json({ error: 'Could not extract text from the file.' });
     }
 
-    // Calculate target questions based on document size (~1 question per 100 words), min 5, max 20
-    const wordCount = extractedText.trim().split(/\s+/).length;
-    let targetTotalQuestions = Math.ceil(wordCount / 100);
-    targetTotalQuestions = Math.max(5, Math.min(20, targetTotalQuestions));
+    // Cap at 5 questions on server for speed — Ollama runs sequentially on CPU
+    // so keeping this low ensures multiple users don't wait too long
+    const targetTotalQuestions = 5;
 
     // Step 2: Chunk the extracted text (increased to 500 words to massively decrease the number of LLM iterations required)
     let chunks = chunkText(extractedText, 500);
 
-    // If there are too many chunks (e.g., a massive PDF), sample roughly 4 chunks to keep wait times under 15 seconds!
-    const MAX_CHUNKS = 4;
+    // Use only 1 chunk per request to minimize Ollama generation time
+    // on a CPU-only shared server. Randomly sample a middle chunk for variety.
+    const MAX_CHUNKS = 1;
     if (chunks.length > MAX_CHUNKS) {
-        const step = chunks.length / MAX_CHUNKS;
-        const sampledChunks = [];
-        for (let i = 0; i < MAX_CHUNKS; i++) {
-            sampledChunks.push(chunks[Math.floor(i * step)]);
-        }
-        chunks = sampledChunks;
+        const midIndex = Math.floor(chunks.length / 2);
+        chunks = [chunks[midIndex]];
     }
 
     // Step 3: Send chunks to AI model for Quiz Generation
@@ -57,8 +53,7 @@ router.post('/', upload.single('file'), async (req, res) => {
         allQuestions = allQuestions.concat(quiz.questions);
     });
 
-    console.log("allQuestions before filter:", JSON.stringify(allQuestions, null, 2));
-    require('fs').writeFileSync('all_q_log.json', JSON.stringify(allQuestions, null, 2));
+    console.log(`Total raw questions generated: ${allQuestions.length}`);
 
     let filteredQuestions = allQuestions.filter(q => 
       q && 
