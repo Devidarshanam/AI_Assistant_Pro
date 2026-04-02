@@ -1,0 +1,37 @@
+# Master .gitignore for AI Assistant Pro
+
+# Dependency folders
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# Secrets (DO NOT COMMIT)
+backend/.env
+.env
+
+# Build outputs
+frontend/dist/
+dist/
+
+# Document uploads and temporary files
+backend/uploads/
+backend/all_q_log.json
+backend/large_res.json
+backend/small_res.json
+backend/test_output.json
+backend/out.txt
+backend/error.log
+backend/test_small_res.json
+
+# Dataset and binary assets
+backend/eng.traineddata
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
