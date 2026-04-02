@@ -23,8 +23,8 @@ app.use('/api/scores', require('./routes/scores'));
 const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');
 app.use(express.static(frontendDist));
 
-// Catch-all: return the React app for any non-API route
-app.get('*', (req, res) => {
+// Catch-all: return the React app for any non-API route (Express 5 syntax)
+app.get('/{*splat}', (req, res) => {
   res.sendFile(path.join(frontendDist, 'index.html'));
 });
 
