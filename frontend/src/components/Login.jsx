@@ -48,8 +48,8 @@ function Login({ onLoginSuccess }) {
     
     try {
         const url = isRegistering 
-            ? 'http://localhost:5000/api/auth/register' 
-            : 'http://localhost:5000/api/auth/login';
+            ? '/api/auth/register' 
+            : '/api/auth/login';
             
         const body = isRegistering 
             ? { username, email, password }

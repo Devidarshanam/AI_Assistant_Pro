@@ -37,7 +37,7 @@ function App() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/upload', {
+      const response = await fetch('/upload', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -76,7 +76,7 @@ function App() {
           const token = localStorage.getItem('token');
           if (!token || !currentFile) return;
 
-          await fetch('http://localhost:5000/api/scores/save', {
+          await fetch('/api/scores/save', {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',

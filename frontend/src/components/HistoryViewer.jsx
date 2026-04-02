@@ -11,7 +11,7 @@ function HistoryViewer({ onClose }) {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('Not authenticated');
 
-        const res = await fetch('http://localhost:5000/api/scores/history', {
+        const res = await fetch('/api/scores/history', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
